@@ -1,11 +1,13 @@
+import argparse
 import pandas as pd
 
-from sklearn import linear_model, metrics, preprocessing
+from sklearn import metrics
 
 import config
+from model_dispatcher import ModelInterface, LogisticRegressionModel, DecisionTreeModel
 
 
-def run(fold):
+def run(fold: int, model: ModelInterface):
     # load the full training data with folds
     df = pd.read_csv(config.TRAINING_FILE)
 
@@ -24,30 +26,17 @@ def run(fold):
     # get validation data using folds
     df_valid = df[df.kfold == fold].reset_index(drop=True)
 
-    # initialize OneHotEncoder from scikit-learn
-    ohe = preprocessing.OneHotEncoder()
-
-    # fit ohe on training + validation features
-    # (do this way as it would be with training + testing data)
-    full_data = pd.concat([df_train[features], df_valid[features]], axis=0)
-    ohe.fit(full_data[features])
-
-    # transform training data
-    x_train = ohe.transform(df_train[features])
-
-    # transform validation data
-    x_valid = ohe.transform(df_valid[features])
-
     # initialize Logistic Regression model
-    model = linear_model.LogisticRegression()
+    lr_model = model(df_train, df_valid, features)
+
+    # one hot encode of all features (they are all categorical)
+    lr_model.encode()
 
     # fit model on training data
-    model.fit(x_train, df_train.target.values)
+    lr_model.fit()
 
     # predict on validation data
-    # we need the probability values as we are calculating AUC
-    # we will use the probability of 1s
-    valid_preds = model.predict_proba(x_valid)[:, 1]
+    valid_preds = lr_model.predict()
 
     # get roc auc score
     auc = metrics.roc_auc_score(df_valid.target.values, valid_preds)
@@ -57,5 +46,21 @@ def run(fold):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--model", type=str, default="lr")
+
+    args = parser.parse_args()
+
+    model = None
+    if (args.model == "lr"):
+        model = LogisticRegressionModel
+    elif (args.model == "rf"):
+        model = DecisionTreeModel
+    else:
+        raise argparse.ArgumentError(
+            "Only 'lr' (logistic regression) and 'rf'"
+            " (random forest) models are supported")
+
     for fold_ in range(5):
-        run(fold_)
+        run(fold_, model)
