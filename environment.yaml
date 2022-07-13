@@ -1,0 +1,19 @@
+name: ml
+channels:
+  - defaults
+  - anaconda
+  - conda-forge
+  - plotly
+dependencies:
+  - python=3.10
+  - pip
+  - ipykernel
+  - matplotlib=3.5.2
+  - seaborn=0.11.2
+  #  - plotly=5.8.2
+  - nbformat=5.4.0
+  - numpy=1.22.4
+  - pandas=1.4.2
+  - scikit-learn=1.1.1
+  - kaggle=1.5.12
+  - xgboost=1.5.1

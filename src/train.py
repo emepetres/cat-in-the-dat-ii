@@ -4,7 +4,13 @@ import pandas as pd
 from sklearn import metrics
 
 import config
-from model_dispatcher import ModelInterface, LogisticRegressionModel, DecisionTreeModel
+from model_dispatcher import (
+    DecisionTreeModelSVD,
+    ModelInterface,
+    LogisticRegressionModel,
+    DecisionTreeModel,
+    XGBoost,
+)
 
 
 def run(fold: int, model: ModelInterface):
@@ -53,14 +59,19 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = None
-    if (args.model == "lr"):
+    if args.model == "lr":
         model = LogisticRegressionModel
-    elif (args.model == "rf"):
+    elif args.model == "rf":
         model = DecisionTreeModel
+    elif args.model == "svd":
+        model = DecisionTreeModelSVD
+    elif args.model == "xgb":
+        model = XGBoost
     else:
         raise argparse.ArgumentError(
             "Only 'lr' (logistic regression) and 'rf'"
-            " (random forest) models are supported")
+            " (random forest) models are supported"
+        )
 
     for fold_ in range(5):
         run(fold_, model)
