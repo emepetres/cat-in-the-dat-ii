@@ -5,7 +5,7 @@ Second challenge of [cat-in-the-dat](https://www.kaggle.com/competitions/cat-in-
 
 NOTES:
 
-* Logistic Regression works much better than Random Forest
+* Logistic Regression works much better than Random Forest, or even XGBoost!
 
 ## Train
 
