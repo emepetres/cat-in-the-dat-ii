@@ -32,10 +32,10 @@ def run(fold: int, model: ModelInterface):
     # get validation data using folds
     df_valid = df[df.kfold == fold].reset_index(drop=True)
 
-    # initialize Logistic Regression model
+    # initialize model
     lr_model = model(df_train, df_valid, features)
 
-    # one hot encode of all features (they are all categorical)
+    # encode all features (they are all categorical)
     lr_model.encode()
 
     # fit model on training data
@@ -69,8 +69,11 @@ if __name__ == "__main__":
         model = XGBoost
     else:
         raise argparse.ArgumentError(
-            "Only 'lr' (logistic regression) and 'rf'"
-            " (random forest) models are supported"
+            "Only 'lr' (logistic regression)"
+            ", 'rf' (random forest)"
+            ", 'svd' (random forest with truncate svd)"
+            ", 'xgb' (XGBoost)"
+            " models are supported"
         )
 
     for fold_ in range(5):

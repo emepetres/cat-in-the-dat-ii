@@ -1,9 +1,13 @@
 import pandas as pd
 from sklearn import model_selection
 
+from common.kaggle import download_competition_data
 import config
 
 if __name__ == "__main__":
+    # Download competition data if necessary
+    download_competition_data(config.COMPETITION, config.DATA_INPUT)
+
     # Read training data
     df = pd.read_csv(config.TRAINING_DATA)
 

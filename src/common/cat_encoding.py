@@ -50,11 +50,12 @@ def LabelEncoder(
     df_train: pd.DataFrame, df_valid: pd.DataFrame, features: List[str]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Used for tree-based algorithms"""
-    # fit ohe on training + validation features
+    # fit LabelEncoder on training + validation features
     # (do this way as it would be with training + testing data)
     full_data = pd.concat([df_train[features], df_valid[features]], axis=0)
 
     for col in features:
+        # initialize LabelEncoder for each feature column
         lbl = preprocessing.LabelEncoder()
 
         # fit the label encoder on all data

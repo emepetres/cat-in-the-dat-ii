@@ -7,9 +7,11 @@ NOTES:
 
 * Logistic Regression works much better than Random Forest, or even XGBoost!
 
-## Train
+## Train & validation
 
 ```bash
+cd src
 conda activate ml
-python -W ignore train.py --model=[lr|rf|svd|xgb]
+python create_folds.py
+python -W ignore train.py --model=lr  # [lr|rf|svd|xgb]
 ```
