@@ -13,5 +13,5 @@ NOTES:
 cd src
 conda activate ml
 python create_folds.py
-python -W ignore train.py --model=lr  # [lr|rf|svd|xgb]
+python -W ignore train.py [--model=lr]  # [lr|rf|svd|xgb]
 ```
