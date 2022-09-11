@@ -33,16 +33,16 @@ def run(fold: int, model: ModelInterface):
     df_valid = df[df.kfold == fold].reset_index(drop=True)
 
     # initialize model
-    lr_model = model(df_train, df_valid, features)
+    custom_model = model(df_train, df_valid, features)
 
     # encode all features (they are all categorical)
-    lr_model.encode()
+    custom_model.encode()
 
     # fit model on training data
-    lr_model.fit()
+    custom_model.fit()
 
     # predict on validation data
-    valid_preds = lr_model.predict()
+    valid_preds = custom_model.predict()
 
     # get roc auc score
     auc = metrics.roc_auc_score(df_valid.target.values, valid_preds)
