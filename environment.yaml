@@ -3,7 +3,8 @@ channels:
   - defaults
   - anaconda
   - conda-forge
-  - plotly
+  - pytorch
+  #  - plotly
 dependencies:
   - python=3.10
   - pip
@@ -17,3 +18,7 @@ dependencies:
   - scikit-learn=1.1.1
   - kaggle=1.5.12
   - xgboost=1.5.1
+  - pytorch=1.12.1
+  - torchvision=0.13.1
+  - torchaudio=0.12.1
+  - cudatoolkit=11.6

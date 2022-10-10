@@ -10,6 +10,7 @@ from model_dispatcher import (
     LogisticRegressionModel,
     DecisionTreeModel,
     XGBoost,
+    EmbeddingsModel,
 )
 
 
@@ -67,12 +68,15 @@ if __name__ == "__main__":
         model = DecisionTreeModelSVD
     elif args.model == "xgb":
         model = XGBoost
+    elif args.model == "emb":
+        model = EmbeddingsModel
     else:
         raise argparse.ArgumentError(
             "Only 'lr' (logistic regression)"
             ", 'rf' (random forest)"
             ", 'svd' (random forest with truncate svd)"
             ", 'xgb' (XGBoost)"
+            "or 'emb' (Tabular NN with embeddings)"
             " models are supported"
         )
 
