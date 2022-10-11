@@ -123,7 +123,7 @@ class EmbeddingsModel(ModelInterface):
         # using Adam optimizer, can add lr=, weight_decay=
         opt = torch.optim.Adam(self.model.parameters())
 
-        criterion = nn.BCELoss()
+        criterion = nn.CrossEntropyLoss()
 
         num_batch = len(train_dl)
         for epoch in tqdm(range(self.epochs)):
@@ -133,7 +133,7 @@ class EmbeddingsModel(ModelInterface):
 
                 opt.zero_grad()  # find where the grads are zero
                 pred = self.model(x)
-                loss = criterion(pred[:, 1], y)
+                loss = criterion(pred, y)
 
                 loss.backward()  # do backprop
                 opt.step()
@@ -154,8 +154,9 @@ class EmbeddingsModel(ModelInterface):
         valid_dl = DataLoader(valid_ds, **params)
 
         preds = list()
+        output = nn.Softmax()  # we need to add softmax as the model does not include it
         for x, y in tqdm(valid_dl, leave=False):
-            pred = self.model(x)
+            pred = output(self.model(x))
 
             preds += list(pred.cpu().data.numpy())
 

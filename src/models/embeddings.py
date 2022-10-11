@@ -46,17 +46,18 @@ class EmbeddingsNN(nn.Module):
         self.dense_layers = nn.Sequential(
             nn.Linear(self.concat_emb_features, 300),
             nn.ReLU(),
-            nn.Dropout1d(0.3),
+            nn.Dropout(0.3),
             nn.BatchNorm1d(300),
             nn.Linear(300, 300),  # TODO what is the output of the second layer??
             nn.ReLU(),
-            nn.Dropout1d(0.3),
+            nn.Dropout(0.3),
             nn.BatchNorm1d(300),
         )
 
         # using softmax and treating it as a two class problem
         # you can also use sigmoid, then you need to use only one output class
-        self.output = nn.Sequential(nn.Linear(300, 2), nn.Softmax())
+        # # self.output = nn.Sequential(nn.Linear(300, 2), nn.Softmax())
+        self.output = nn.Linear(300, 2)  # not using softmax as we include it in loss
 
     def forward(self, x):
         embs = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
@@ -69,10 +70,17 @@ class EmbeddingsNN(nn.Module):
 class CategoricalDataset(data.Dataset):
     def __init__(self, features: np.ndarray, labels: np.ndarray, device: str):
         self.x = torch.from_numpy(features).to(device)
-        self.y = torch.from_numpy(labels).to(device).to(torch.float32)
+        self.y = (
+            torch.from_numpy(CategoricalDataset._to_categorical(labels, 2))
+            .to(device)
+            .to(torch.float32)
+        )
 
     def __len__(self):
         return len(self.y)
 
     def __getitem__(self, idx):
         return [self.x[idx], self.y[idx]]
+
+    def _to_categorical(y: np.ndarray, num_classes: int) -> np.ndarray:
+        return np.eye(num_classes, dtype="uint8")[y]
