@@ -43,21 +43,24 @@ class EmbeddingsNN(nn.Module):
         # a dense layer with dropout
         # we will repeat it multiple times
         # start with one or two layers only
+        hidden_sizes = [300, 300]
         self.dense_layers = nn.Sequential(
-            nn.Linear(self.concat_emb_features, 300),
+            nn.Linear(self.concat_emb_features, hidden_sizes[0]),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.BatchNorm1d(300),
-            nn.Linear(300, 300),  # TODO what is the output of the second layer??
+            nn.BatchNorm1d(hidden_sizes[0]),
+            nn.Linear(hidden_sizes[0], hidden_sizes[1]),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.BatchNorm1d(300),
+            nn.BatchNorm1d(hidden_sizes[1]),
         )
 
         # using softmax and treating it as a two class problem
         # you can also use sigmoid, then you need to use only one output class
         # # self.output = nn.Sequential(nn.Linear(300, 2), nn.Softmax())
-        self.output = nn.Linear(300, 2)  # not using softmax as we include it in loss
+        self.output = nn.Linear(
+            hidden_sizes[1], 2
+        )  # not using softmax as we include it in loss
 
     def forward(self, x):
         embs = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
